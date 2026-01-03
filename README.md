@@ -25,13 +25,32 @@ git clone https://github.com/xiahualiu/docker-steam-box64.git
 cd docker-steam-box64
 ```
 
-### 2. Build the image
+### 2. Configure User Permissions (Optional but Recommended)
+
+To ensure proper file permissions on mounted volumes, configure the user UID/GID:
+
+```bash
+# Create .env file from example
+cp .env.example .env
+
+# Find your user's UID and GID
+id
+
+# Edit .env and set PUID and PGID to match your user
+# For example, if id shows uid=1001 gid=1001:
+# PUID=1001
+# PGID=1001
+```
+
+This ensures files created by the container will be owned by your user on the host system.
+
+### 3. Build the image
 
 ```bash
 docker compose build
 ```
 
-### 3. Run a game server
+### 4. Run a game server
 
 #### Generic usage (interactive shell)
 

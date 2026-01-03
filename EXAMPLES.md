@@ -12,6 +12,25 @@ This document provides detailed examples for running various game servers with d
 
 ## Basic Setup
 
+### Configuring User Permissions
+
+For proper file permissions on mounted volumes, configure UID/GID to match your host user:
+
+```bash
+# Create .env file from example
+cp .env.example .env
+
+# Find your user's UID and GID
+id
+
+# Edit .env and set PUID and PGID
+# Example: if `id` shows uid=1000 gid=1000
+vi .env
+# Set:
+# PUID=1000
+# PGID=1000
+```
+
 ### Building the Image
 
 ```bash
@@ -19,7 +38,7 @@ This document provides detailed examples for running various game servers with d
 git clone https://github.com/xiahualiu/docker-steam-box64.git
 cd docker-steam-box64
 
-# Build the image
+# Build the image (uses UID/GID from .env if present)
 docker compose build
 ```
 
