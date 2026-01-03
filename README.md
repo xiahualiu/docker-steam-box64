@@ -25,13 +25,37 @@ git clone https://github.com/xiahualiu/docker-steam-box64.git
 cd docker-steam-box64
 ```
 
-### 2. Build the image
+### 2. Configure User Permissions (Optional but Recommended)
+
+To ensure proper file permissions on mounted volumes, configure the user UID/GID:
+
+```bash
+# Create .env file from example
+cp .env.example .env
+
+# Find your user's UID and GID
+id
+
+# Edit .env and set PUID and PGID to match your user
+# For example, if id shows uid=1001 gid=1001:
+# PUID=1001
+# PGID=1001
+```
+
+This ensures files created by the container will be owned by your user on the host system.
+
+### 3. Build the image
 
 ```bash
 docker compose build
 ```
 
-### 3. Run a game server
+**Note:** If you've previously built the image and change PUID/PGID values, you need to rebuild:
+```bash
+docker compose build --no-cache
+```
+
+### 4. Run a game server
 
 #### Generic usage (interactive shell)
 
@@ -107,6 +131,33 @@ The docker-compose.yml includes volume mounts for:
 - **Config files**: Persists configuration
 - **SteamCMD**: Persists downloaded files to avoid re-downloading
 
+### File Permissions
+
+To ensure proper file permissions on mounted volumes, you can set custom UID and GID for the steam user:
+
+1. Create a `.env` file in the project root (copy from `.env.example`):
+```bash
+cp .env.example .env
+```
+
+2. Find your user's UID and GID on the host system:
+```bash
+id
+```
+
+3. Edit `.env` and set PUID and PGID to match your host user:
+```env
+PUID=1000
+PGID=1000
+```
+
+4. Build the image with these values:
+```bash
+docker compose build
+```
+
+This ensures that files created by the container on mounted volumes will have the correct ownership on your host system, making them easy to manage, backup, and modify.
+
 ## Ports
 
 Default exposed ports (can be customized in docker-compose.yml):
@@ -116,6 +167,13 @@ Default exposed ports (can be customized in docker-compose.yml):
 - **Palworld**: 8211, 27015 (UDP)
 
 ## Environment Variables
+
+### User Configuration (Build Arguments)
+
+These are set in the `.env` file and used during image build:
+
+- `PUID=1000`: User ID for the steam user inside the container
+- `PGID=1000`: Group ID for the steam user inside the container
 
 ### Box64 Configuration (already set in Dockerfile)
 

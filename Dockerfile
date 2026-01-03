@@ -3,13 +3,19 @@ FROM ubuntu:24.04
 LABEL maintainer="docker-steam-box64"
 LABEL description="Ubuntu 24.04 with SteamCMD and Box64 for ARM64 game servers"
 
+# Build arguments for user ID and group ID
+ARG PUID=1000
+ARG PGID=1000
+
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     STEAMCMDDIR=/home/steam/steamcmd \
-    BOX64_DIR=/opt/box64
+    BOX64_DIR=/opt/box64 \
+    PUID=${PUID} \
+    PGID=${PGID}
 
 # Install base dependencies
 RUN apt-get update && apt-get install -y \
@@ -41,11 +47,36 @@ RUN dpkg --add-architecture i386 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create steam user
+# Create steam user with custom UID/GID
 # Note: sudo access is granted to allow Box64 auto-update in entrypoint
 # The container runs as root initially to update Box64, then switches to steam user
-RUN useradd -m -s /bin/bash steam \
-    && echo "steam ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+RUN set -eux; \
+    # Check if group with PGID exists, if not create it
+    if ! getent group ${PGID} > /dev/null 2>&1; then \
+        groupadd -g ${PGID} steam; \
+        GROUP_NAME="steam"; \
+    else \
+        # If group exists, get its name and use it
+        GROUP_NAME=$(getent group ${PGID} | cut -d: -f1); \
+        echo "Group with GID ${PGID} already exists: ${GROUP_NAME}"; \
+    fi; \
+    # Check if user with PUID exists
+    if getent passwd ${PUID} > /dev/null 2>&1; then \
+        # User with this UID exists, get the username
+        EXISTING_USER=$(getent passwd ${PUID} | cut -d: -f1); \
+        echo "User with UID ${PUID} already exists: ${EXISTING_USER}"; \
+        # If it's not named 'steam', create an alias or handle appropriately
+        if [ "${EXISTING_USER}" != "steam" ]; then \
+            echo "WARNING: UID ${PUID} is already in use by ${EXISTING_USER}. Creating steam user with different UID."; \
+            # Create steam user with next available UID but use the group we determined above
+            useradd -m -s /bin/bash -g "${GROUP_NAME}" steam; \
+        fi; \
+    else \
+        # Create steam user with specified UID and group
+        useradd -m -s /bin/bash -u ${PUID} -g "${GROUP_NAME}" steam; \
+    fi; \
+    # Grant sudo access
+    echo "steam ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Switch to steam user
 USER steam
