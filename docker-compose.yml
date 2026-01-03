@@ -29,7 +29,12 @@ services:
     tty: true
     stdin_open: true
     # Uncomment to run Valheim server on startup
-    # command: ["/usr/local/bin/start-valheim.sh"]
+    # command: >
+    #   bash -c "
+    #   ${STEAMCMDDIR}/steamcmd.sh +force_install_dir /home/steam/valheim-server +login anonymous +app_update 896660 validate +quit &&
+    #   cd /home/steam/valheim-server &&
+    #   box64 ./valheim_server.x86_64 -name \"${SERVER_NAME}\" -port 2456 -world \"${WORLD_NAME}\" -password \"${SERVER_PASS}\" -public ${SERVER_PUBLIC}
+    #   "
     profiles:
       - valheim
 
@@ -63,7 +68,12 @@ services:
     tty: true
     stdin_open: true
     # Uncomment to run Palworld server on startup
-    # command: ["/usr/local/bin/start-palworld.sh"]
+    # command: >
+    #   bash -c "
+    #   ${STEAMCMDDIR}/steamcmd.sh +force_install_dir /home/steam/palworld-server +login anonymous +app_update 2394010 validate +quit &&
+    #   cd /home/steam/palworld-server &&
+    #   box64 ./PalServer.sh
+    #   "
     profiles:
       - palworld
 
