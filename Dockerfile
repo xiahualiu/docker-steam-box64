@@ -70,41 +70,14 @@ RUN git clone https://github.com/ptitSeb/box64.git "${BOX64_DIR}" \
     && make install \
     && ldconfig
 
-# Create entrypoint script for Box64 auto-update
-RUN echo '#!/bin/bash\n\
-set -e\n\
-\n\
-echo "Checking for Box64 updates..."\n\
-cd '"${BOX64_DIR}"' || exit 1\n\
-\n\
-# Store current commit hash\n\
-CURRENT_COMMIT=$(git rev-parse HEAD)\n\
-\n\
-# Fetch latest changes\n\
-git fetch origin\n\
-LATEST_COMMIT=$(git rev-parse origin/main)\n\
-\n\
-# Check if update is needed\n\
-if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then\n\
-    echo "New Box64 version available. Updating..."\n\
-    git pull origin main\n\
-    cd build\n\
-    cmake .. -DARM_DYNAREC=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo\n\
-    make -j$(nproc)\n\
-    make install\n\
-    ldconfig\n\
-    echo "Box64 updated successfully!"\n\
-else\n\
-    echo "Box64 is already up to date."\n\
-fi\n\
-\n\
-# Switch to steam user and execute the command\n\
-if [ "$#" -eq 0 ]; then\n\
-    exec su - steam\n\
-else\n\
-    exec su - steam -c "$*"\n\
-fi' > /entrypoint.sh \
-    && chmod +x /entrypoint.sh
+# Copy and set up entrypoint script for Box64 auto-update
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Copy game server startup scripts
+COPY start-valheim.sh /usr/local/bin/start-valheim.sh
+COPY start-palworld.sh /usr/local/bin/start-palworld.sh
+RUN chmod +x /usr/local/bin/start-valheim.sh /usr/local/bin/start-palworld.sh
 
 # Set Box64 environment variables for optimal performance
 ENV BOX64_NOBANNER=1 \

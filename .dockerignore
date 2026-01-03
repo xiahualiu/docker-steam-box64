@@ -6,8 +6,8 @@
 *.md
 LICENSE
 
-# Scripts
-*.sh
+# Scripts (except entrypoint.sh which is needed for build)
+run-*.sh
 
 # Docker files
 docker-compose.yml
