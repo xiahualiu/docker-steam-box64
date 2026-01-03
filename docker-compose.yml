@@ -1,0 +1,28 @@
+services:
+  # Generic SteamCMD + Box64 container (default)
+  steam-box64:
+    build:
+      context: .
+      args:
+        USER_UID: 1001
+    image: steam-box64:latest
+    container_name: steam-box64
+    user: "1001"
+    environment:
+      # Set GAME_APP_ID to install/update a specific game server via SteamCMD
+      # default is 2394010 (Palworld Dedicated Server)
+      - GAME_APP_ID=2394010
+      # Set executable path relative to GAME_SERVER_DIR to run the server
+      - GAME_EXECUTABLE=PalServer.sh
+      # Update save path as needed
+      - GAME_SAVE_DIR=/home/steam/save
+      - GAME_SERVER_DIR=/home/steam/server
+      - STEAMCMD_DIR=/home/steam/steamcmd
+    volumes:
+      - /mnt/data/server:/home/steam/server
+      - /mnt/data/save:/home/steam/save
+      - /mnt/data/steamcmd:/home/steam/steamcmd
+    ports:
+      # adjust as needed
+      - "8211:8211/udp"
+    restart: unless-stopped
