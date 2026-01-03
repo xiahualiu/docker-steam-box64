@@ -1,0 +1,38 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+*.md
+LICENSE
+
+# Scripts
+*.sh
+
+# Docker files
+docker-compose.yml
+
+# Game server data
+game-servers/
+valheim-data/
+valheim-config/
+palworld-data/
+palworld-config/
+steamcmd/
+servers/
+*-data/
+*-config/
+
+# Build artifacts
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
