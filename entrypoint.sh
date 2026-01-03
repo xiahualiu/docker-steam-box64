@@ -29,5 +29,5 @@ fi
 if [ "$#" -eq 0 ]; then
     exec su - steam
 else
-    exec su - steam -c "$*"
+    exec su - steam -c "$@"
 fi

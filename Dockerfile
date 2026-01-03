@@ -14,8 +14,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # Install base dependencies
 RUN apt-get update && apt-get install -y \
     software-properties-common \
-    lib32gcc-s1 \
-    lib32stdc++6 \
     curl \
     wget \
     ca-certificates \
@@ -44,6 +42,8 @@ RUN dpkg --add-architecture i386 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create steam user
+# Note: sudo access is granted to allow Box64 auto-update in entrypoint
+# The container runs as root initially to update Box64, then switches to steam user
 RUN useradd -m -s /bin/bash steam \
     && echo "steam ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
