@@ -54,10 +54,11 @@ RUN set -eux; \
     # Check if group with PGID exists, if not create it
     if ! getent group ${PGID} > /dev/null 2>&1; then \
         groupadd -g ${PGID} steam; \
+        GROUP_NAME="steam"; \
     else \
-        # If group exists, get its name
-        EXISTING_GROUP=$(getent group ${PGID} | cut -d: -f1); \
-        echo "Group with GID ${PGID} already exists: ${EXISTING_GROUP}"; \
+        # If group exists, get its name and use it
+        GROUP_NAME=$(getent group ${PGID} | cut -d: -f1); \
+        echo "Group with GID ${PGID} already exists: ${GROUP_NAME}"; \
     fi; \
     # Check if user with PUID exists
     if getent passwd ${PUID} > /dev/null 2>&1; then \
@@ -67,12 +68,12 @@ RUN set -eux; \
         # If it's not named 'steam', create an alias or handle appropriately
         if [ "${EXISTING_USER}" != "steam" ]; then \
             echo "WARNING: UID ${PUID} is already in use by ${EXISTING_USER}. Creating steam user with different UID."; \
-            # Create steam user with next available UID but specified GID
-            useradd -m -s /bin/bash -g ${PGID} steam; \
+            # Create steam user with next available UID but use the group we determined above
+            useradd -m -s /bin/bash -g "${GROUP_NAME}" steam; \
         fi; \
     else \
-        # Create steam user with specified UID and GID
-        useradd -m -s /bin/bash -u ${PUID} -g ${PGID} steam; \
+        # Create steam user with specified UID and group
+        useradd -m -s /bin/bash -u ${PUID} -g "${GROUP_NAME}" steam; \
     fi; \
     # Grant sudo access
     echo "steam ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
