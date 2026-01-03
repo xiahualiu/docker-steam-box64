@@ -3,7 +3,11 @@ version: '3.8'
 services:
   # Example: Valheim dedicated server
   valheim:
-    build: .
+    build:
+      context: .
+      args:
+        PUID: ${PUID:-1000}
+        PGID: ${PGID:-1000}
     image: steam-box64:latest
     container_name: valheim-server
     environment:
@@ -31,7 +35,11 @@ services:
 
   # Example: Palworld dedicated server
   palworld:
-    build: .
+    build:
+      context: .
+      args:
+        PUID: ${PUID:-1000}
+        PGID: ${PGID:-1000}
     image: steam-box64:latest
     container_name: palworld-server
     environment:
@@ -61,7 +69,11 @@ services:
 
   # Generic SteamCMD + Box64 container (default)
   steam-box64:
-    build: .
+    build:
+      context: .
+      args:
+        PUID: ${PUID:-1000}
+        PGID: ${PGID:-1000}
     image: steam-box64:latest
     container_name: steam-box64
     volumes:

@@ -107,6 +107,33 @@ The docker-compose.yml includes volume mounts for:
 - **Config files**: Persists configuration
 - **SteamCMD**: Persists downloaded files to avoid re-downloading
 
+### File Permissions
+
+To ensure proper file permissions on mounted volumes, you can set custom UID and GID for the steam user:
+
+1. Create a `.env` file in the project root (copy from `.env.example`):
+```bash
+cp .env.example .env
+```
+
+2. Find your user's UID and GID on the host system:
+```bash
+id
+```
+
+3. Edit `.env` and set PUID and PGID to match your host user:
+```env
+PUID=1000
+PGID=1000
+```
+
+4. Build the image with these values:
+```bash
+docker compose build
+```
+
+This ensures that files created by the container on mounted volumes will have the correct ownership on your host system, making them easy to manage, backup, and modify.
+
 ## Ports
 
 Default exposed ports (can be customized in docker-compose.yml):
@@ -116,6 +143,13 @@ Default exposed ports (can be customized in docker-compose.yml):
 - **Palworld**: 8211, 27015 (UDP)
 
 ## Environment Variables
+
+### User Configuration (Build Arguments)
+
+These are set in the `.env` file and used during image build:
+
+- `PUID=1000`: User ID for the steam user inside the container
+- `PGID=1000`: Group ID for the steam user inside the container
 
 ### Box64 Configuration (already set in Dockerfile)
 
