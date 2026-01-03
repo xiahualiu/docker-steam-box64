@@ -50,6 +50,11 @@ This ensures files created by the container will be owned by your user on the ho
 docker compose build
 ```
 
+**Note:** If you've previously built the image and change PUID/PGID values, you need to rebuild:
+```bash
+docker compose build --no-cache
+```
+
 ### 4. Run a game server
 
 #### Generic usage (interactive shell)

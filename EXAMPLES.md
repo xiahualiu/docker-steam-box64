@@ -40,6 +40,9 @@ cd docker-steam-box64
 
 # Build the image (uses UID/GID from .env if present)
 docker compose build
+
+# If you change PUID/PGID values after building, rebuild with:
+docker compose build --no-cache
 ```
 
 ### Interactive Shell
