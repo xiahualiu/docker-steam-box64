@@ -2,6 +2,7 @@ FROM ubuntu:24.04
 
 LABEL maintainer="docker-steam-box64"
 LABEL description="Ubuntu 24.04 with SteamCMD and Box64 for ARM64 game servers"
+LABEL architecture="aarch64"
 
 # Build arguments for user ID and group ID
 ARG PUID=1000
@@ -104,11 +105,6 @@ RUN git clone https://github.com/ptitSeb/box64.git "${BOX64_DIR}" \
 # Copy and set up entrypoint script for Box64 auto-update
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-# Copy game server startup scripts
-COPY start-valheim.sh /usr/local/bin/start-valheim.sh
-COPY start-palworld.sh /usr/local/bin/start-palworld.sh
-RUN chmod +x /usr/local/bin/start-valheim.sh /usr/local/bin/start-palworld.sh
 
 # Set Box64 environment variables for optimal performance
 ENV BOX64_NOBANNER=1 \

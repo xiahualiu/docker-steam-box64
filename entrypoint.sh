@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+echo "=================================================="
+echo "Docker Steam Box64 - ARM64 Game Server Container"
+echo "=================================================="
+echo "NOTE: This container uses Box64 to emulate x86-64"
+echo "binaries on ARM64 (aarch64) hardware."
+echo "SteamCMD and all game servers run through Box64."
+echo "=================================================="
+echo ""
 echo "Checking for Box64 updates..."
 cd "${BOX64_DIR}" || exit 1
 
