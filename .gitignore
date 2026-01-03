@@ -1,0 +1,26 @@
+# Game server data directories
+game-servers/
+valheim-data/
+valheim-config/
+palworld-data/
+palworld-config/
+steamcmd/
+servers/
+
+# Docker volumes
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
