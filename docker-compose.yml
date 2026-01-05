@@ -10,10 +10,10 @@ services:
     user: "1001"
     environment:
       # Set GAME_APP_ID to install/update a specific game server via SteamCMD
-      # default is 2394010 (Palworld Dedicated Server)
-      - GAME_APP_ID=2394010
+      # default is 2278520 (Enshrouded Dedicated Server)
+      - GAME_APP_ID=2278520
       # Set executable path relative to GAME_SERVER_DIR to run the server
-      - GAME_EXECUTABLE=PalServer.sh
+      - GAME_EXECUTABLE=enshrouded_server.exe
       # Update save path as needed
       - GAME_SAVE_DIR=/home/steam/save
       - GAME_SERVER_DIR=/home/steam/server

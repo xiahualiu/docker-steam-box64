@@ -24,7 +24,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        ca-certificates curl wget git build-essential cmake locales python3 \
     # Add game dependencies as needed, e.g., libfreetype6 for Enshrouded Dedicated Server
-    # libfreetype6 \
+       libfreetype6 \
     && locale-gen en_US.UTF-8 \
     && update-locale LANG=en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
@@ -52,6 +52,25 @@ RUN if ! id -u ${USER_UID} >/dev/null 2>&1; then \
         echo "User with UID ${USER_UID} already exists, please change USER_UID argument."; \
         exit 1; \
     fi
+
+USER ${USER_NAME}
+WORKDIR /home/${USER_NAME}
+
+# GE Proton ENV variables
+ENV PROTON_DIR="/home/steam/proton"
+ENV PROTON_VERSION="GE-Proton10-27"
+ENV PROTON_URL="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/${PROTON_VERSION}/${PROTON_VERSION}.tar.gz" 
+ENV PROTON_EXECUTABLE_PATH="${PROTON_DIR}/files/bin/wine64"
+
+# Download and unpack the specified GE-Proton release into the Proton directory
+RUN mkdir -p ${PROTON_DIR} \
+    && wget -qO- ${PROTON_URL} | tar -xz --strip-components=1 -C ${PROTON_DIR}
+
+# Ensure the Proton wrapper is executable
+RUN chmod +x ${PROTON_EXECUTABLE_PATH}
+
+# Create directories for game server files and Proton fixes configuration
+RUN mkdir -p /home/${USER_NAME}/.config/protonfixes
 
 # Entrypoint
 COPY --chown=${USER_NAME}:${USER_GROUP} entrypoint.sh /entrypoint.sh

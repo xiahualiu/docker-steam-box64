@@ -88,23 +88,46 @@ install_or_update_steamcmd() {
     popd >/dev/null
     log "Initialization complete. Starting game server..."
 }
-
 update_game_server() {
     log "Updating game server via SteamCMD (AppID: ${GAME_APP_ID})..."
     pushd "${STEAMCMD_DIR}" >/dev/null
-    box64 ./linux32/steamcmd +force_install_dir "${GAME_SERVER_DIR}" +login anonymous +app_update "${GAME_APP_ID}" validate +quit
+    box64 ./linux32/steamcmd \
+    +force_install_dir "${GAME_SERVER_DIR}" \
+    +login anonymous \
+    +@sSteamCmdForcePlatformType windows \
+    +app_update "${GAME_APP_ID}" validate \
+    +quit
     popd >/dev/null
     log "Game server update complete."
 }
 
 run_game_server() {
-    # Run the game via box64
     if [ -z "${GAME_EXECUTABLE}" ] || [ ! -f "${GAME_SERVER_DIR}/${GAME_EXECUTABLE}" ]; then
         error "GAME_EXECUTABLE is not set or does not exist: ${GAME_SERVER_DIR}/${GAME_EXECUTABLE}"
         error "Set GAME_EXECUTABLE so that GAME_SERVER_DIR/GAME_EXECUTABLE points to the game server executable."
         exit 1
     fi
     box64 "${GAME_SERVER_DIR}/${GAME_EXECUTABLE}"
+}
+
+run_game_server_with_ge_proton() {
+    if [ -z "${GAME_EXECUTABLE}" ] || [ ! -f "${GAME_SERVER_DIR}/${GAME_EXECUTABLE}" ]; then
+        error "GAME_EXECUTABLE is not set or does not exist: ${GAME_SERVER_DIR}/${GAME_EXECUTABLE}"
+        error "Set GAME_EXECUTABLE so that GAME_SERVER_DIR/GAME_EXECUTABLE points to the game server executable."
+        exit 1
+    fi
+
+    # Proton compatibility environment (paths used by Proton)
+    export STEAM_COMPAT_CLIENT_INSTALL_PATH="${STEAMCMD_DIR}"
+    export STEAM_COMPAT_DATA_PATH="${STEAMCMD_DIR}/compatdata/${GAME_APP_ID}"
+    export WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
+
+    # Ensure compatibility data directory exists
+    mkdir -p "${STEAM_COMPAT_DATA_PATH}"
+
+    # Run the game via box64 and GE Proton
+    # Append any additional arguments after the game executable as needed
+    box64 "${PROTON_EXECUTABLE_PATH}" "${GAME_SERVER_DIR}/${GAME_EXECUTABLE}"
 }
 
 # Ensure required directories exist and have correct permissions
@@ -114,7 +137,7 @@ require_writable_dir "STEAMCMD_DIR"
 
 install_or_update_steamcmd
 update_game_server
-run_game_server
+run_game_server_with_ge_proton
 
 # Execute the requested command (container runs as UID/GID 1001 in compose)
 if [ "$#" -eq 0 ]; then
