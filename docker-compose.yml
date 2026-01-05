@@ -5,21 +5,23 @@ services:
       context: .
       args:
         USER_UID: 1001
-    image: steam-box64:latest
+    image: valheim-box64-server:latest
     user: "1001"
     environment:
-      # Set GAME_APP_ID to install/update a specific game server via SteamCMD
       # Valheim Dedicated Server AppID
       - GAME_APP_ID=896660
       # Valheim server executable relative to GAME_SERVER_DIR
       - GAME_EXECUTABLE=valheim_server.x86_64
-      # Update save path as needed
+      # Update mount volume paths as needed
       - GAME_SAVE_DIR=/home/steam/valheim-save
       - GAME_SERVER_DIR=/home/steam/server
       - STEAMCMD_DIR=/home/steam/steamcmd
     volumes:
+      # Game server files
       - /mnt/data/server:/home/steam/server
+      # Valheim save files
       - /mnt/data/valheim-save:/home/steam/valheim-save
+      # SteamCMD files
       - /mnt/data/steamcmd:/home/steam/steamcmd
     ports:
       # Valheim uses UDP port 2456 (and adjacent ports); map primary UDP port
