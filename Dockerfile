@@ -23,8 +23,7 @@ ENV BOX64_NOBANNER=1 \
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        ca-certificates curl wget git build-essential cmake locales python3 \
-    # Add game dependencies as needed, e.g., libfreetype6 for Enshrouded Dedicated Server
-    # libfreetype6 \
+       libatomic1 libpulse-dev libpulse0 \
     && locale-gen en_US.UTF-8 \
     && update-locale LANG=en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*

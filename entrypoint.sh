@@ -104,7 +104,19 @@ run_game_server() {
         error "Set GAME_EXECUTABLE so that GAME_SERVER_DIR/GAME_EXECUTABLE points to the game server executable."
         exit 1
     fi
-    box64 "${GAME_SERVER_DIR}/${GAME_EXECUTABLE}"
+    # Valheim need SteamID and LD_LIBRARY_PATH to steamclient.so
+    export SteamAppId=892970
+    export LD_LIBRARY_PATH=${STEAMCMD_DIR}/linux64:$LD_LIBRARY_PATH
+
+    box64 "${GAME_SERVER_DIR}/${GAME_EXECUTABLE}" \
+    -nographics \
+    -batchmode \
+    -name "蛋炒饭赛博羊毛服务器" \
+    -savedir "${GAME_SAVE_DIR}" \
+    -world "MINISHIJIE" \
+    -password "12344321" \
+    -port "2456" \
+    -public 1
 }
 
 # Ensure required directories exist and have correct permissions
