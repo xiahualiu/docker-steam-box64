@@ -19,7 +19,7 @@ Ubuntu 24.04 ARM64 image bundling Box64 + SteamCMD to run many x86-64 Linux dedi
 Create the bind mount directories on the host first; otherwise Docker may create them as root and the container user may not be able to write to them.
 
 ```bash
-mkdir -p /mnt/data/server /mnt/data/valheim-save /mnt/data/steamcmd
+mkdir -p server valheim-save steamcmd
 ```
 
 ### 3) Build + run

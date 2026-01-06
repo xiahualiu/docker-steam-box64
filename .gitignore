@@ -1,4 +1,7 @@
 # Game server data directories
+server/
+steamcmd/
+valheim-save/
 
 # Editor files
 .vscode/

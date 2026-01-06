@@ -18,11 +18,11 @@ services:
       - STEAMCMD_DIR=/home/steam/steamcmd
     volumes:
       # Game server files
-      - /mnt/data/server:/home/steam/server
+      - ./server:/home/steam/server
       # Valheim save files
-      - /mnt/data/valheim-save:/home/steam/valheim-save
+      - ./valheim-save:/home/steam/valheim-save
       # SteamCMD files
-      - /mnt/data/steamcmd:/home/steam/steamcmd
+      - ./steamcmd:/home/steam/steamcmd
     ports:
       # Valheim uses UDP port 2456 (and adjacent ports); map primary UDP port
       - "2456-2457:2456-2457/udp"
